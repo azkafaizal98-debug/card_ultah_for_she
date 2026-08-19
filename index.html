@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Special Day ❤️</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Audio untuk Amplop Awal (URL Online) -->
+<audio id="bg-music" src="/db_music/abaoutYou.mp3" loop></audio>
+
+  <!-- Layer Animasi Bunga Jatuh -->
+  <div id="flower-container"></div>
+
+  <!-- ================= PAGE 1: AMPLOP INTERAKTIF ================= -->
+  <section id="page-1" class="page active pink-bg">
+    <div class="envelope-wrapper">
+      <div id="envelope" class="envelope">
+        <div class="pocket"></div>
+        
+        <!-- Surat yang keluar dari amplop -->
+        <div class="letter">
+          <div class="card-header-icon">🌸</div>
+          <h2>Happy Birthday,</h2>
+          <p class="card-sub">Aku sudah menyiapkan sesuatu yang spesial untuk kamu.</p>
+          
+          <!-- Tombol Navigasi ke Page 2 -->
+          <button id="nav-p2-btn" class="btn-pink hidden" onclick="startJourney()">Mulai Kejutan ➔</button>
+        </div>
+
+        <div class="flap"></div>
+        <!-- Tombol Buka Amplop -->
+        <button id="open-envelope-btn" class="open-btn" onclick="openEnvelope()">OPEN</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 2: LANDING PAGE AESTHETIC ================= -->
+  <section id="page-2" class="page hidden dark-bg">
+    <div class="polaroid p1"><img src="/img/foto5.png" alt="p1"></div>
+    <div class="polaroid p2"><img src="/img/foto6.png" alt="p2"></div>
+    <div class="polaroid p3"><img src="/img/foto7.png" alt="p3"></div>
+    <div class="polaroid p4"><img src="/img/foto4.png" alt="p4"></div>
+
+    <div class="landing-content">
+      <p class="tagline">✦ A LOVE LETTER FOR YOU ✦</p>
+      <h1 class="main-title">Your Special Day</h1>
+      <p class="sub-title">Created form me, just for you</p>
+      <button class="btn-glow" onclick="goToPage(3)">✦ READ MY LETTER ✦</button>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 3: SECRET DIARY ================= -->
+  <section id="page-3" class="page hidden dark-bg">
+    <div class="diary-wrapper">
+      <h2 class="section-title">Secret Diary</h2>
+      <p class="section-sub">Klik buku untuk membalik sampulnya</p>
+
+      <div class="book-container" onclick="openBook(this)">
+        <div class="book">
+          <div class="cover">
+            <h3>Secret Diary</h3>
+            <p>From me</p>
+            <span class="click-hint">Klik untuk Buka</span>
+          </div>
+          <div class="page-content">
+            <h4>Pesan Untukmu </h4>
+            <p>Selamat ulang tahun ya! Di hari yang spesial ini, aku cuma mau bilang terima kasih sudah hadir dan mewarnai hari-hariku. Semoga di usiamu yang baru ini, kamu selalu dikelilingi kebahagiaan!</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-glow nav-btn" onclick="goToPage(4)">Our Memories ➔</button>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 4: OUR MEMORIES (SWIPE UP CARDS) ================= -->
+  <section id="page-4" class="page hidden dark-bg">
+    <div class="memories-wrapper">
+      <h2 class="section-title">Our Memories</h2>
+      <p class="section-sub">Swipe / geser kartu ke atas untuk melihat kenangan berikutnya!</p>
+      
+      <!-- Container Kartu Swipe -->
+      <div class="cards-stack">
+        <div class="swipe-card" onmousedown="startSwipe(event)" ontouchstart="startSwipe(event)">
+          <img src="/img/foto1.png" alt="Memory 1">
+        </div>
+        <div class="swipe-card" onmousedown="startSwipe(event)" ontouchstart="startSwipe(event)">
+          <img src="/img/foto2.png" alt="Memory 2">
+        </div>
+        <div class="swipe-card" onmousedown="startSwipe(event)" ontouchstart="startSwipe(event)">
+          <img src="/img/foto3.png" alt="Memory 3">
+        </div>
+      </div>
+
+      <button id="nav-p5-btn" class="btn-glow nav-btn hidden" onclick="goToPage(5)">Lanjut ke Kue ➔</button>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 5: INTERACTIVE CAKE ================= -->
+ <section id="page-5" class="page hidden dark-bg">
+    <div class="cake-wrapper">
+      <h2 class="section-title">Make a Wish! 🕯️</h2>
+      <p id="cake-hint" class="section-sub">Klik kue 2 kali untuk memadamkan lilin!</p>
+      
+      <!-- Container Utama Kue CSS -->
+      <div class="cake-container" onclick="handleCakeClick()">
+        <div class="plate"></div>
+        <div class="cake-body">
+          <!-- Lapisan Kue -->
+          <div class="layer layer-bottom"></div>
+          <div class="layer layer-middle"></div>
+          <div class="layer layer-top">
+            <div class="icing"></div>
+            <div class="drip drip-1"></div>
+            <div class="drip drip-2"></div>
+            <div class="drip drip-3"></div>
+          </div>
+
+          <!-- Lilin & Api -->
+          <div class="candle">
+            <div id="flame" class="flame-css"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overlay Transisi Bunga -->
+  <div id="flower-overlay" class="flower-overlay hidden">
+    <div class="blooming-flower">🌸</div>
+  </div>
+<!-- ================= PAGE 6: FLOATING WISHES & SURAT ================= -->
+  <section id="page-6" class="page hidden dark-bg">
+    <div class="wish-page-wrapper">
+      <h2 class="section-title">Make a Wish & Read 💖</h2>
+      <p class="section-sub">Pecahkan gelembung di bawah untuk membaca doa-doaku!</p>
+
+      <!-- 1. ATAS: Display Box Ucapan Pop-Up -->
+      <div id="wish-display-box" class="wish-box">
+        <p id="wish-display-text">✨ Pecahkan salah satu gelembung di bawah ini... ✨</p>
+      </div>
+
+      <!-- Container Gelembung Melayang -->
+      <div class="floating-bubbles">
+        <button class="bubble" onclick="burstWish(this, 'Semoga di usiamu yang baru ini, kamu selalu diberikan kesehatan, kebahagiaan')">
+          Health
+        </button>
+        <button class="bubble delay-1" onclick="burstWish(this, 'Semoga semua impian dan cita-cita yang sedang kamu perjuangkan bisa tercapai')">
+          Dream
+        </button>
+        <button class="bubble delay-2" onclick="burstWish(this, 'Terima kasih sudah selalu jadi orang yang baik dan hadir di hidupku. Tetap jadi diri kamu yang luar biasa ya')">
+          Spesial
+        </button>
+        <button class="bubble delay-3" onclick="burstWish(this, 'Semoga hari-harimu selalu dikelilingi oleh orang-orang tulus yang menyayangimu')">
+          Wish
+        </button>
+      </div>
+
+      <!-- 2. TENGAH: Kertas Surat Terbuka -->
+      <div class="open-letter-card">
+        <div class="letter-badge">Special Letter</div>
+        <p class="letter-text">
+          "Di hari yang special ini, Terima kasih sudah terus bertahan dan tumbuh menjadi pribadi yang hebat."
+        </p>
+      </div>
+
+      <!-- 3. BAWAH: Tombol Navigasi ke Final Page -->
+      <button class="btn-glow nav-btn" onclick="goToPage(7)">Lanjut ke Surprise! ➔</button>
+    </div>
+  </section>
+  <!-- ================= FLOWER OVERLAY TRANSITION ================= -->
+  <div id="flower-transition" class="flower-overlay hidden">
+    <div class="flower-curtain">
+      <span>🌸</span><span>🌺</span><span>🌹</span><span>🌷</span>
+      <span>🌸</span><span>🌺</span><span>🌹</span><span>🌷</span>
+      <span>🌸</span><span>🌺</span><span>🌹</span><span>🌷</span>
+    </div>
+  </div>
+<!-- ================= PAGE 7: FINAL PAGE WITH EXPANDABLE MUSIC PLAYER ================= -->
+  <section id="page-7" class="page hidden dark-bg scrollable-page">
+    <div class="final-wrapper">
+      
+      <!-- Card Ucapan Utama -->
+      <div class="birthday-card">
+        <h1 class="glow-text">HAPPY BIRTHDAY FOR ENI</h1>
+        <button id="open-gift-btn" class="btn-glow" onclick="toggleGiftBox()">
+          <i class="fa-solid fa-gift"></i> Buka Hadiah Spesial <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Container Gift Box -->
+<div id="gift-card" class="gift-card hidden">
+  <p class="gift-instruction">Sentuh kado untuk melihat kejutan! ✨</p>
+  
+  <!-- Interactive CSS 3D Gift Box -->
+  <div class="gift-box-wrapper" onclick="openGift()">
+    <div class="gift-box">
+      
+      <!-- Simpul Pita Atas -->
+      <div class="bow-container">
+        <div class="bow-left"></div>
+        <div class="bow-right"></div>
+        <div class="bow-center"></div>
+      </div>
+
+      <!-- Tutup Kado -->
+      <div class="gift-lid">
+        <div class="lid-ribbon"></div>
+      </div>
+
+      <!-- Badan Kado -->
+      <div class="gift-body">
+        <div class="body-ribbon-v"></div>
+        <div class="body-ribbon-h"></div>
+      </div>
+
+    </div>
+    <!-- Bayangan bawah yang responsif -->
+    <div class="gift-shadow"></div>
+  </div>
+
+  <p id="gift-message" class="gift-message hidden">
+    🌸 *"Semoga harimu selalu indah dan dipenuhi kebahagiaan seperti bunga yang bermekaran!"* 🌸
+  </p>
+</div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

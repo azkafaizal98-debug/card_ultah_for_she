@@ -1,0 +1,924 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Tangerine:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #fff;
+}
+
+.page {
+  display: none;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.page.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  z-index: 2;
+}
+
+.pink-bg, 
+.dark-bg {
+  background: linear-gradient(135deg, #ffe6e8, #f5d0fe);
+}
+
+/* --- ANIMASI HUJAN BUNGA --- */
+#flower-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+}
+
+.falling-flower {
+  position: absolute;
+  top: -20px;
+  font-size: 20px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+}
+
+/* --- PAGE 1: AMPLOP 3D & SURAT --- */
+.envelope-wrapper {
+  height: 380px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.envelope {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background-color: #f43f5e;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden; /* <-- KUNCINYA DI SINI: Menyembunyikan surat yang ngintip */
+  transition: overflow 0.3s ease;
+}
+.envelope .flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-left: 150px solid transparent;
+  border-right: 150px solid transparent;
+  border-top: 110px solid #fb7185;
+  transform-origin: top;
+  transition: transform 0.6s ease-in-out, z-index 0.6s;
+  z-index: 4;
+}
+
+.envelope .pocket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-left: 150px solid #fda4af;
+  border-right: 150px solid #fda4af;
+  border-bottom: 110px solid #f43f5e;
+  border-top: 90px solid transparent;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  z-index: 3;
+}
+
+.envelope .letter {
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+  width: 270px;
+  height: 230px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  transform: translateY(100%); /* Sembunyikan surat ke arah bawah */
+  opacity: 0;                  /* Transparan saat tertutup */
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-header-icon { font-size: 1.5rem; margin-bottom: 5px; }
+.letter h2 { font-size: 1.1rem; color: #4a4a4a;  font-family: "Merriweather", serif;}
+.highlight-title { font-size: 1.3rem; color: #e11d48; margin-bottom: 5px; }
+.card-sub { font-size: 0.8rem; color: #666; margin-bottom: 12px; line-height: 1.4;font-family: "Google Sans", sans-serif;
+ }
+
+.open-btn {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background-color: #ffe4e6;
+  color: #e11d48;
+  border: 2px solid #e11d48;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, opacity 0.3s;
+}
+
+.btn-pink {
+  background: #f43f5e;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(244, 63, 94, 0.3);
+  font-family: "Roboto Mono", monospace;
+}
+.envelope.open {
+  overflow: visible; /* Izinkan surat keluar melebihi batas amplop setelah dibuka */
+}
+
+.envelope.open .letter {
+  transform: translateY(-120px); /* Meluncur naik ke atas */
+  opacity: 1;                     /* Tampilkan surat */
+  z-index: 5;
+}
+
+/* --- STATE SAAT AMPLOP DIBUKA --- */
+.envelope.open .flap {
+  transform: rotateX(180deg); /* Membalik lipatan ke atas */
+  z-index: 1; /* Pindah ke belakang surat setelah terbalik */
+}
+
+/* Setelah overflow diizinkan lewat JS, surat meluncur keluar */
+.envelope.is-overflow .letter {
+  transform: translateY(-130px);
+  opacity: 1;
+  z-index: 5;
+}
+
+.envelope.open .open-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- PAGE 2: LANDING PAGE --- */
+.landing-content { text-align: center; z-index: 3; }
+.tagline { font-size: 0.8rem; letter-spacing: 2px; color: #f472b6; margin-bottom: 10px; }
+.main-title { font-size: 5.8rem;  margin-bottom: 10px; text-shadow: 0 0 10px rgba(244,114,182,0.5);   font-family: "Tangerine", cursive; }
+.sub-title { font-size: 0.9rem; color: #ccc; margin-bottom: 30px;  font-family: "Google Sans", sans-serif; }
+
+.btn-glow {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #f472b6;
+  padding: 12px 25px;
+  border-radius: 25px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
+  transition: all 0.3s;
+}
+
+.btn-glow:hover { background: #f472b6; color: #000; }
+
+.polaroid {
+  position: absolute;
+  background: white;
+  padding: 8px 8px 20px 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  transform: rotate(var(--rot));
+  opacity: 0.7;
+}
+.polaroid img { width: 80px; height: 80px; object-fit: cover; }
+.p1 { top: 15%; left: 10%; --rot: -12deg; }
+.p2 { top: 15%; right: 10%; --rot: 10deg; }
+.p3 { bottom: 15%; left: 12%; --rot: 8deg; }
+.p4 { bottom: 15%; right: 12%; --rot: -15deg; }
+
+/* --- PAGE 3: BUKU 3D --- */
+.diary-wrapper { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.section-title { font-size: 1.8rem; color: #f472b6; margin-bottom: 5px; font-family: "Merriweather", serif;}
+.section-sub { font-size: 0.85rem; color: #aaa; margin-bottom: 25px; font-family: "Google Sans", sans-serif;}
+
+.book-container { perspective: 1000px; margin-bottom: 30px; cursor: pointer; }
+.book {
+  width: 260px;
+  height: 340px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+.cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #881337;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
+  transform-origin: left;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+  border: 2px solid #f472b6;
+  z-index: 2;
+}
+
+.cover h3{
+  font-family: "Tangerine", cursive;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 50px;
+}
+
+.cover p{
+   font-family: "Merriweather", serif;
+  font-optical-sizing: auto;
+}
+
+.page-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  color: #333;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+  text-align: left;
+  line-height: 1.6;
+}
+.page-content h4{
+  font-family: "Merriweather", serif;
+}
+
+.page-content p{
+  font-family: "Nunito", sans-serif;
+  font-size: medium;
+}
+
+.nav-btn{
+  font-family: "Roboto Mono", monospace;
+}
+
+.book.open .cover { transform: rotateY(-160deg); }
+.click-hint { font-size: 0.75rem; color: #f472b6; margin-top: 15px; }
+
+/* --- PAGE 4: SWIPE CARDS (RECENT APPS STYLE) --- */
+.section-title{
+  font-family: "Merriweather", serif;
+  font-size: 23px;
+}
+.section-sub{
+   font-family: "Nunito", sans-serif;
+   font-size: 12px;
+}
+
+.memories-wrapper {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.cards-stack {
+  position: relative;
+  width: 280px;
+  height: 380px;
+  margin: 20px auto;
+}
+
+.swipe-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px 12px 20px 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.swipe-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.swipe-card .caption {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Efek saat kartu digeser ke atas dan terhapus */
+.swipe-card.dismissed {
+  transform: translateY(-150%) rotate(-10deg) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- PAGE 5: KUE --- */
+/* --- PAGE 5: CSS ART CAKE --- */
+.cake-wrapper {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cake-container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin-top: 40px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* Piring Kue */
+.plate {
+  position: absolute;
+  bottom: 0;
+  width: 240px;
+  height: 15px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Badan Kue */
+.cake-body {
+  position: relative;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
+}
+
+.cake-container:hover .cake-body {
+  transform: scale(1.02); /* Efek membesar tipis saat di-hover */
+}
+
+/* Layer-layer Kue */
+.layer {
+  width: 100%;
+  border-radius: 6px;
+  position: relative;
+}
+
+.layer-top {
+  height: 45px;
+  background: #f472b6; /* Pink muda */
+  border-bottom: 4px solid #db2777;
+}
+
+.layer-middle {
+  width: 85%;
+  height: 40px;
+  background: #fbcfe8; /* Soft pink */
+  border-bottom: 4px solid #f472b6;
+}
+
+.layer-bottom {
+  width: 70%;
+  height: 40px;
+  background: #fff; /* Cream/Icing */
+  border-radius: 8px 8px 0 0;
+  position: relative;
+}
+
+/* Lelehan Krim (Icing Drips) */
+.drip {
+  position: absolute;
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+  top: 38px;
+}
+.drip-1 { width: 16px; height: 12px; left: 10px; }
+.drip-2 { width: 20px; height: 18px; left: 40px; }
+.drip-3 { width: 14px; height: 10px; right: 15px; }
+
+/* Lilin */
+.candle {
+  position: absolute;
+  top: -30px;
+  width: 12px;
+  height: 30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #fbbf24,
+    #fbbf24 5px,
+    #f59e0b 5px,
+    #f59e0b 10px
+  );
+  border-radius: 3px 3px 0 0;
+}
+
+/* Api Lilin (CSS Flame) */
+.flame-css {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 18px;
+  background: #f97316;
+  border-radius: 50% 50% 20% 20%;
+  box-shadow: 0 0 12px #f97316, 0 0 20px #fef08a;
+  animation: flicker-css 0.8s infinite alternate ease-in-out;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Efek Bintik Kuning di Tengah Api */
+.flame-css::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 8px;
+  background: #fef08a;
+  border-radius: 50%;
+}
+
+/* Animasi Goyangan Api */
+@keyframes flicker-css {
+  0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+  100% { transform: translateX(-50%) scale(1.15) rotate(2deg); }
+}
+
+/* Efek Lilin Mati */
+.flame-css.extinguished {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.2);
+  pointer-events: none;
+}
+/* Transisi Bunga Fullscreen */
+.flower-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 241, 242, 0.95);
+  z-index: 999;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+.flower-overlay.show { opacity: 1; pointer-events: auto; }
+.blooming-flower { font-size: 2px; animation: bloom 1.5s ease-in-out forwards; }
+@keyframes bloom {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(80) rotate(180deg); }
+  100% { transform: scale(150) rotate(360deg); }
+}
+
+.final-wrapper { text-align: center; }
+.glow-text { font-size: 2.2rem; color: #f472b6; margin-bottom: 15px; text-shadow: 0 0 15px #f472b6; }
+.final-msg { font-size: 1.1rem; color: #ddd; }
+
+.hidden { display: none !important; }
+.nav-btn { margin-top: 10px; }
+/* --- PAGE 6: WISH & LETTER PAGE --- */
+.wish-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 360px;
+  gap: 15px;
+  text-align: center;
+}
+
+/* 1. Box Display Pop-up Ucapan */
+.wish-box {
+  width: 100%;
+  min-height: 70px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed #f472b6;
+  border-radius: 15px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.wish-box p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  color: black;
+  line-height: 1.4;
+   font-family: "Nunito", sans-serif;
+}
+
+/* Container Gelembung Melayang */
+.floating-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.bubble {
+  background: rgba(244, 114, 182, 0.2);
+  border: 1px solid rgba(244, 114, 182, 0.6);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  animation: float 3s infinite ease-in-out alternate;
+  transition: transform 0.2s;
+}
+
+.bubble.delay-1 { animation-delay: 0.7s; }
+.bubble.delay-2 { animation-delay: 1.4s; }
+.bubble.delay-3 { animation-delay: 2.1s; }
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Animasi Gelembung Meletus */
+.bubble.popped {
+  animation: pop-burst 0.25s forwards cubic-bezier(0.1, 0.8, 0.3, 1) !important;
+  pointer-events: none;
+}
+
+@keyframes pop-burst {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.8; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* 2. Kertas Surat Terbuka */
+.open-letter-card {
+  width: 100%;
+  background: #fff;
+  color: #333;
+  border-radius: 12px;
+  padding: 20px 15px 15px 15px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.letter-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e11d48;
+  color: white;
+  font-size: 0.7rem;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.letter-text {
+ font-family: "Tangerine", cursive;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #334155;
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* --- OVERLAY TRANSITION BUNGA --- */
+.flower-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 230, 232, 0.95);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.flower-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flower-curtain {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  font-size: 3rem;
+  animation: float-flowers 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes float-flowers {
+  0% { transform: scale(0.8) rotate(-5deg); }
+  100% { transform: scale(1.2) rotate(5deg); }
+}
+
+/* --- PAGE 7 SCROLLABLE & FINAL CARD --- */
+/* Semua teks di dalam card jadi putih */
+.birthday-card, 
+.birthday-card h1, 
+.birthday-card .glow-text,
+.birthday-card p {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Efek glowing putih */
+}
+
+.birthday-card .glow-text{
+  font-family: "Merriweather", serif;
+}
+
+.scrollable-page {
+  overflow-y: auto !important;
+  padding: 40px 15px;
+  display: block !important;
+}
+
+/* Container Utama Page 7 */
+.final-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Posisi default di tengah layar */
+  min-height: 80vh;
+  gap: 20px;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 20px 0;
+  /* Transisi halus saat posisi berpindah */
+  transition: justify-content 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+/* Kartu Ucapan HBD */
+.birthday-card {
+  text-align: center;
+  background-color: transparent; 
+  backdrop-filter: blur(8px);
+  padding: 30px 20px;
+  border-radius: 20px;
+  border: 1px solid #fda4af;
+  box-shadow: 0 10px 25px rgba(244, 63, 94, 0.15);
+  width: 100%;
+  /* Animasi pergeseran posisi */
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- 3D GIFT BOX DESIGN --- */
+.gift-box-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gift-box {
+  position: relative;
+  width: 100px;
+  height: 90px;
+  transition: transform 0.3s ease;
+  /* Animasi melayang meliuk halus */
+  animation: floatGift 3s ease-in-out infinite;
+}
+
+.gift-box-wrapper:hover .gift-box {
+  transform: scale(1.08) translateY(-5px);
+}
+
+/* 1. Simpul Pita (Ribbon Bow) */
+.bow-container {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 20px;
+  z-index: 4;
+}
+
+.bow-left, .bow-right {
+  position: absolute;
+  width: 22px;
+  height: 18px;
+  border: 3px solid #fbbf24; /* Warna pita emas/kuning */
+  border-radius: 50% 50% 0 50%;
+  top: 0;
+}
+
+.bow-left {
+  left: 3px;
+  transform: rotate(-15deg);
+}
+
+.bow-right {
+  right: 3px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(15deg);
+}
+
+.bow-center {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #f59e0b;
+  border-radius: 50%;
+  left: 50%;
+  top: 4px;
+  transform: translateX(-50%);
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* 2. Tutup Kado (Gift Lid) */
+.gift-lid {
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 112px;
+  height: 26px;
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  border-radius: 8px;
+  z-index: 3;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.lid-ribbon {
+  width: 20px;
+  height: 100%;
+  background: #fbbf24;
+  margin: 0 auto;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+}
+
+/* 3. Badan Kado (Gift Body) */
+.gift-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 68px;
+  background: linear-gradient(135deg, #fda4af, #f43f5e);
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  box-shadow: inset 0 -4px 8px rgba(0,0,0,0.1);
+}
+
+.body-ribbon-v {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  background: #fbbf24;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.body-ribbon-h {
+  position: absolute;
+  width: 100%;
+  height: 18px;
+  background: #fbbf24;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 4. Bayangan Kado */
+.gift-shadow {
+  width: 80px;
+  height: 12px;
+  background: rgba(225, 29, 72, 0.15);
+  border-radius: 50%;
+  margin-top: 5px;
+  filter: blur(4px);
+  animation: shadowScale 3s ease-in-out infinite;
+}
+
+/* --- ANIMASI & STATE OPEN --- */
+
+/* Animasi Melayang */
+@keyframes floatGift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shadowScale {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(0.85); opacity: 0.4; }
+}
+
+/* Efek Tutup Kado Terbuka Terlempar Ke Atas */
+.gift-box-wrapper.open .gift-box {
+  animation: none; /* Matikan floating saat terbuka */
+}
+
+.gift-box-wrapper.open .gift-lid,
+.gift-box-wrapper.open .bow-container {
+  transform: translateY(-65px) rotate(-18deg);
+}
+
+.gift-message {
+  font-size: 0.9rem;
+  color: #881337;
+  font-style: italic;
+  margin-top: 15px;
+  line-height: 1.5;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.gift-message.hidden {
+  display: none;
+}
+
+/* --- PARTIKEL BUNGA MELEDAK DARI KADO --- */
+.flower-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 1.6rem;
+  user-select: none;
+  /* Menjalankan animasi terlempar dan jatuh */
+  animation: burstAndFall 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes burstAndFall {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5)) scale(1.4) rotate(90deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    /* Jatuh perlahan ke bawah layar sambil berputar */
+    transform: translate(-50%, -50%) translate(var(--dx), calc(var(--dy) + 250px)) scale(0.6) rotate(360deg);
+  }
+}
